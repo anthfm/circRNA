@@ -28,7 +28,9 @@ mkdir -p $outdir
 CIRCexplorer2 parse --pe -t TopHat-Fusion $hits > $outdir/CIRCexplorer2_parse.log
 
 ###3### annotate back-spliced junctions & circRNA/ciRNA's expressed
-
+#8gb memory
+#6 threads
+#5hr run time
 module load CIRCexplorer2
 
 
