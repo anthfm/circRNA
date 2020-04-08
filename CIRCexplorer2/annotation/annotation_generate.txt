@@ -2,10 +2,10 @@
 ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_33/gencode.v33.annotation.gtf.gz
 
 ###2### download gtfToGenePred, to convert GTF to GenePred format, in order to be used with CIRCexplorer2 annotate step
-http://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/gtfToGenePred
+wget http://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/gtfToGenePred
 
 ###3### run gtfToGenePred
-./gtfToGenePred.dms -genePredExt -geneNameAsName2 gencode.v33.annotation.gtf gencode_v33.txt
+./gtfToGenePred -genePredExt -geneNameAsName2 gencode.v33.annotation.gtf gencode_v33.txt
 
 ###4### in R, organize columns GenePred of to match requested CIRCexplorer2 format (note: gencode gtf does not have full-list of refseq names, therefore they are not included)
 
