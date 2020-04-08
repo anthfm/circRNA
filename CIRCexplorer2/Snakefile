@@ -1,0 +1,52 @@
+configfile: "config.yaml"
+
+import pandas as pd
+import os
+
+samples = pd.read_table(
+    config["sample_file"]
+).set_index(
+    "sample", drop=False
+)
+
+output_dir = os.environ.get("output_dir")
+ref_m="module load igenome-human/hg19"
+
+def get_r1(wildcards):
+    return samples.read1[wildcards.sample]
+
+def get_r2(wildcards):
+    return samples.read2[wildcards.sample]
+
+
+rule all:
+    input: directory(expand("{output_dir}/alignment/{sample}", sample = samples["sample"], output_dir=output_dir))
+
+    params: 
+        prefix=ref_m,
+        runtime="10:00:00"
+    threads: 1
+    resources: mem_mb=6000
+    shell:
+     """
+     {params.prefix}
+     """ 
+
+rule mapFASTQ:
+    input: 
+        f1 =  get_r1, 
+        f2 =  get_r2, 
+        ref = directory('/cluster/tools/data/genomes/human/hg19/iGenomes/Sequence/BowtieIndex')
+    params:
+        runtime="6:00:00"
+    output: directory("{output_dir}/alignment/{sample}")
+    threads: 1
+    resources: mem_mb=30000
+    shell:
+     """
+     module load python/2.7
+     #!/usr/bin/python
+     module load tophat2
+     module load bowtie
+     tophat2 -o {output} -p 1 --fusion-search --keep-fasta-order --bowtie1 --no-coverage-search {input.ref}/genome {input.f1} {input.f2}
+     """  
