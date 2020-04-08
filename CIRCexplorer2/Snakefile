@@ -20,7 +20,7 @@ def get_r2(wildcards):
 
 
 rule all:
-    input: directory(expand("{output_dir}/alignment/{sample}", sample = samples["sample"], output_dir=output_dir))
+    input: expand("{output_dir}/parse/{sample}/{sample}_back_spliced_junction.bed", sample = samples["sample"], output_dir=output_dir)
 
     params: 
         prefix=ref_m,
@@ -35,11 +35,12 @@ rule all:
 rule mapFASTQ:
     input: 
         f1 =  get_r1, 
-        f2 =  get_r2, 
-        ref = directory('/cluster/tools/data/genomes/human/hg19/iGenomes/Sequence/BowtieIndex')
+        f2 =  get_r2
     params:
-        runtime="6:00:00"
-    output: directory("{output_dir}/alignment/{sample}")
+        runtime="6:00:00",
+        od="{output_dir}/alignment/{sample}",
+        bowtie="/cluster/tools/data/genomes/human/hg19/iGenomes/Sequence/BowtieIndex/genome"
+    output: "{output_dir}/alignment/{sample}/accepted_hits.bam"
     threads: 1
     resources: mem_mb=30000
     shell:
@@ -48,5 +49,22 @@ rule mapFASTQ:
      #!/usr/bin/python
      module load tophat2
      module load bowtie
-     tophat2 -o {output} -p 1 --fusion-search --keep-fasta-order --bowtie1 --no-coverage-search {input.ref}/genome {input.f1} {input.f2}
+     tophat2 -o {params.od} -p 1 --fusion-search --keep-fasta-order --bowtie1 --no-coverage-search {params.bowtie} {input.f1} {input.f2}
+     ls -la {output}
+     """
+
+rule parse:
+    input: 
+        hits="{output_dir}/alignment/{sample}/accepted_hits.bam"
+    params:
+        runtime="2:00:00"
+    output: "{output_dir}/parse/{sample}/{sample}_back_spliced_junction.bed"
+    log:
+        "{output_dir}/parse/{sample}/logs/CIRCexplorer2_parse.log"
+    threads: 2
+    resources: mem_mb=8000
+    shell:
+     """
+     module load CIRCexplorer2
+     CIRCexplorer2 parse --pe -t TopHat-Fusion {input.hits} -b {output} > {log}
      """  
