@@ -1,15 +1,15 @@
-###1### download Gencode v33 GTF (will be using this gtf across all circRNA tools, to ensure consistency)
-ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_33/gencode.v33.annotation.gtf.gz
+###1### download Gencode v33 GTF for hg19 (will be using this gtf across all circRNA tools, to ensure consistency)
+ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_33/GRCh37_mapping/gencode.v33lift37.annotation.gtf.gz
 
 ###2### download gtfToGenePred, to convert GTF to GenePred format, in order to be used with CIRCexplorer2 annotate step
 wget http://hgdownload.soe.ucsc.edu/admin/exe/macOSX.x86_64/gtfToGenePred
 
 ###3### run gtfToGenePred
-./gtfToGenePred -genePredExt -geneNameAsName2 gencode.v33.annotation.gtf gencode_v33.txt
+./gtfToGenePred -genePredExt -geneNameAsName2 gencode.v33lift37.annotation.gtf gencode_v33lift37.txt
 
 ###4### in R, organize columns GenePred of to match requested CIRCexplorer2 format (note: gencode gtf does not have full-list of refseq names, therefore they are not included)
 
 options(stringsAsFactors = F)
-gencode <- read.csv("~/Desktop/gencode_v33.txt", sep = "\t", header = F)
+gencode <- read.csv("~/Desktop/gencode_v33lift37.txt", sep = "\t", header = F)
 tt <- gencode[,c("V12","V1","V2","V3","V4","V5","V6","V7","V8","V9","V10")]
-write.table(tt, file="~/Desktop/gencode_v33_refFlat.txt", quote = F, row.names = F, col.names = F, sep = "\t")
+write.table(tt, file="~/Desktop/gencode_v33lift37_refFlat.txt", quote = F, row.names = F, col.names = F, sep = "\t")
