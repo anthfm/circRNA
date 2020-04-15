@@ -88,5 +88,5 @@ rule annotate:
     shell:
      """
      module load CIRCexplorer2
-     CIRCexplorer2 annotate --low-confidence -r {input.gtf} -g {input.ref} -b {input.bed} -o {output} > {log}
+     CIRCexplorer2 annotate -r {input.gtf} -g {input.ref} -b {input.bed} -o {output} > {log}
      """
