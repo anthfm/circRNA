@@ -24,7 +24,8 @@ rule all:
 
     params: 
         prefix=ref_m,
-        runtime="120:00:00"
+        runtime="120:00:00",
+        partition="all"
     threads: 1
     resources: mem_mb=6000
     shell:
@@ -39,10 +40,11 @@ rule mapFASTQ:
     params:
         runtime="48:00:00",
         od="{output_dir}/alignment/{sample}",
-        bowtie="/cluster/tools/data/genomes/human/hg19/iGenomes/Sequence/BowtieIndex/genome"
+        bowtie="/cluster/tools/data/genomes/human/hg19/iGenomes/Sequence/BowtieIndex/genome",
+        partition="himem"
     output: "{output_dir}/alignment/{sample}/accepted_hits.bam"
     threads: 15
-    resources: mem_mb=30000
+    resources: mem_mb=40000
     shell:
      """
      module load python/2.7
@@ -57,7 +59,8 @@ rule parse:
     input: 
         hits="{output_dir}/alignment/{sample}/accepted_hits.bam"
     params:
-        runtime="8:00:00"
+        runtime="8:00:00",
+        partition="all"
     output: "{output_dir}/parse/{sample}/{sample}_back_spliced_junction.bed"
     log:
         "{output_dir}/parse/{sample}/logs/CIRCexplorer2_parse.log"
@@ -75,7 +78,8 @@ rule annotate:
         gtf="/cluster/projects/bhklab/Data/ncRNA_detect/ref/gencode_v33lift37_refFlat.txt",
         ref="/cluster/tools/data/genomes/human/hg19/iGenomes/Sequence/WholeGenomeFasta/genome.fa"
     params:
-        runtime="8:00:00"
+        runtime="8:00:00",
+        partition="all"
     output: "{output_dir}/annotate/{sample}/{sample}_circularRNA_known.txt"
     log:
         "{output_dir}/annotate/{sample}/logs/CIRCexplorer2_annotate.log"
@@ -85,4 +89,4 @@ rule annotate:
      """
      module load CIRCexplorer2
      CIRCexplorer2 annotate --low-confidence -r {input.gtf} -g {input.ref} -b {input.bed} -o {output} > {log}
-     """ 
+     """
