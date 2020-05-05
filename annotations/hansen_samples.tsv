@@ -1,0 +1,7 @@
+sample	read1	read2
+22Rv1neg	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen/hansen_rnaseq/22Rv1/rnaseR-/22Rv1neg_CGATGT_R1.fastq.gz	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen/hansen_rnaseq/22Rv1/rnaseR-/22Rv1neg_CGATGT_R2.fastq.gz
+22Rv1pos	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen/hansen_rnaseq/22Rv1/rnaseR+/22Rv1plus_TGACCA_R1.fastq.gz	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen/hansen_rnaseq/22Rv1/rnaseR+/22Rv1plus_TGACCA_R2.fastq.gz
+LNCaPneg	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen/hansen_rnaseq/LNCaP/rnaseR-/SRR6999017_1.fastq.gz	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen/hansen_rnaseq/LNCaP/rnaseR-/SRR6999017_2.fastq.gz
+LNCaPpos	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen/hansen_rnaseq/LNCaP/rnaseR+/SRR6999018_1.fastq.gz	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen/hansen_rnaseq/LNCaP/rnaseR+/SRR6999018_2.fastq.gz
+PC3neg	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen/hansen_rnaseq/PC3/rnaseR-/PC3neg_AGTCAA_R1.fastq.gz	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen/hansen_rnaseq/PC3/rnaseR-/PC3neg_AGTCAA_R2.fastq.gz
+PC3pos	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen/hansen_rnaseq/PC3/rnaseR+/PC3pos_AGTTCC_R1.fastq.gz	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen/hansen_rnaseq/PC3/rnaseR+/PC3pos_AGTTCC_R2.fastq.gz

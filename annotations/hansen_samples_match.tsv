@@ -1,0 +1,5 @@
+sample	read1	read2
+22Rv1ccle	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen_match/22Rv1/SRR8616169_1.fastq.gz	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen_match/22Rv1/SRR8616169_2.fastq.gz
+PC3ccle	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen_match/PC3/SRR8615641_1.fastq.gz	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen_match/PC3/SRR8615641_2.fastq.gz
+PC3gcsi	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen_match/PC3/636083_1_1.rnaseq.fastq.gz	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen_match/PC3/636083_1_2.rnaseq.fastq.gz
+LNCaPccle	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen_match/LNCaP/SRR8615547_1.fastq.gz	/cluster/projects/bhklab/Data/ncRNA_detect/raw/hansen_match/LNCaP/SRR8615547_2.fastq.gz
