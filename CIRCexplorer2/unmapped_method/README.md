@@ -1,1 +1,1 @@
-**NOTE**: For GDSC samples, 
+**NOTE**: For GDSC samples, 70GB mem, 120hr run-time was used for TopHat2 rule, while 70GB mem and 72hr wall-time was used for TopHatFusion rule for some GDSC samples that were larger (gdsc16756_4#51, gdsc16756_6#53, gdsc16848_2,gdsc16848_3,gdsc16848_7,gdsc16871_5,gdsc16871_6,gdsc16872_2,gdsc16872_4,gdsc16872_5).
