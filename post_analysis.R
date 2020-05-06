@@ -1,6 +1,7 @@
 ##script to read in processed circRNA data (CCLE, GDSC, gCSI, Hansen) from CIRCexplorer2 and CIRI2 for comparison
 
 options(stringsAsFactors = F)
+
 ####################################################
 ####### Determine replicates across datasets #######
 ####################################################
@@ -104,19 +105,66 @@ gdsc_ciri_counts$cellid <- gdsc$cellid[match(rownames(gdsc_ciri_counts), rowname
 gdsc_ciri_counts <- gdsc_ciri_counts[match(gcsi_ciri_counts$cellid, gdsc_ciri_counts$cellid),]
 
 ciri_combined <- data.frame("gcsi"=as.numeric(gcsi_ciri_counts$count), "ccle"=as.numeric(ccle_ciri_counts$count), "gdsc"=as.numeric(gdsc_ciri_counts$count))
-rowcnames(ciri_combined) <- gcsi_ciri_counts$cellid
+rownames(ciri_combined) <- gcsi_ciri_counts$cellid
+colnames(ciri_combined) <- c("gCSI","CCLE","GDSC")
+
 
 #violin plot of ccle, gdsc, gcsi circRNA counts
 library(ggplot2)
 library(reshape2)
 df.m <- reshape2::melt(ciri_combined, id.vars = NULL)
-count_plot <- ggplot(df.m, aes(x = variable, y = value, fill=variable)) + geom_violin() + 
+pdf(file="/Users/anthmam/Desktop/Projects/BHKLAB/ncRNA/results/circRNA_plots/CIRI2_violin.pdf", width = 10)
+ggplot(df.m, aes(x = variable, y = value, fill=variable)) + geom_violin() + 
   stat_summary(
   fun.data = "mean_sdl",  fun.args = list(mult = 1), 
-  geom = "pointrange", color = "black")  + scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))  + labs(title="Number of circRNA's per dataset (CIRI2)", 
+  geom = "pointrange", color = "black")  + scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))  + labs(title="circRNA abundance per dataset (CIRI2)", 
                                                                                                                 subtitle="",
                                                                                                                 x="Dataset",
                                                                                                                 y="circRNA Number") + theme(legend.position="none", plot.title = element_text(hjust = 0.5))
+dev.off()
+
+
+#violin plot of ccle, gdsc, gcsi circRNA counts (log2)
+library(ggplot2)
+library(reshape2)
+df.m <- reshape2::melt(ciri_combined, id.vars = NULL)
+#df.m$value <- log2(df.m$value + 1) # Get log2 counts per million - because the data is count data (gene counts) and will contain many 0s we need to add a count of 1 to every value in order to prevent attempting log2(0) from creating errors. This data has no 0's but I will use this to keep consistent when doing gene expression analysis next.
+df.m$value <- log2(df.m$value)
+pdf(file="/Users/anthmam/Desktop/Projects/BHKLAB/ncRNA/results/circRNA_plots/CIRI2_violin_log2.pdf", width = 10)
+ggplot(df.m, aes(x = variable, y = value, fill=variable)) + geom_violin() + 
+  stat_summary(
+    fun.data = "mean_sdl",  fun.args = list(mult = 1), 
+    geom = "pointrange", color = "black")  + scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))  + labs(title="circRNA abundance per dataset (CIRI2)", 
+                                                                                                                    subtitle="",
+                                                                                                                    x="Dataset",
+                                                                                                                    y="Log2(abundance)") + theme(legend.position="none", plot.title = element_text(hjust = 0.5))
+dev.off()
+
+#heatmap of ccle, gdsc, gcsi circRNA counts (log2)
+library(gplots)
+ciri_combined_t <- t(ciri_combined)
+ciri_combined_t <- log2(ciri_combined_t)
+
+pdf(file="/Users/anthmam/Desktop/Projects/BHKLAB/ncRNA/results/circRNA_plots/CIRI2_heatmap.pdf", width = 10)
+heatmap.2(ciri_combined_t, col=bluered,trace="none", main="CIRI2 circRNA counts (log2)",scale="row", density.info="none", margins=c(12,8), keysize=1)
+dev.off()
+
+
+#boxplot of ccle, gdsc, gcsi circRNA counts (log2)
+my_colors <- c( 
+  rgb(143,199,74,maxColorValue = 255),
+  rgb(242,104,34,maxColorValue = 255), 
+  rgb(111,145,202,maxColorValue = 255)
+)
+
+pdf(file="/Users/anthmam/Desktop/Projects/BHKLAB/ncRNA/results/circRNA_plots/CIRI2_boxplot_log2.pdf", width = 10)
+boxplot(log2(ciri_combined), 
+        xlab="Dataset", 
+        ylab="Log2(Abundance)",
+        las=2,
+        col=my_colors)
+dev.off()
+
 
 
 #filter circRNA counts by at least 1.5-fold enrichment in matching RNAse-R sample
@@ -157,21 +205,41 @@ filterCIRI <- function(nonRNAseR_dir, RNAseR_dir){
     hansen_match <- hansen_match[which(hansen_match$circRNA_ID %in% sample_match$circRNA_ID),]
     hansen_match  <- hansen_match[order(sample_match$circRNA_ID),]
     
-    filtered <- sample_match[hansen_match$junction_reads >= 1.5*(sample_match$junction_reads),]
-    
+    filtered <- sample_match[hansen_match$junction_reads/sample_match$junction_reads >= 1.5,]
+
     count <- sum(filtered$junction_reads)
     circ_counts_df[f,] <- c(sample_name,count)
   }
   return(circ_counts_df)
 } 
 
-validated_circRNA <- filterCIRI(nonRNAseR_dir = "/Users/anthmam/Desktop/Projects/BHKLAB/ncRNA/results/CIRI2/hansen_match/result", 
+validated_circRNA_ciri <- filterCIRI(nonRNAseR_dir = "/Users/anthmam/Desktop/Projects/BHKLAB/ncRNA/results/CIRI2/hansen_match/result", 
                                 RNAseR_dir = "/Users/anthmam/Desktop/Projects/BHKLAB/ncRNA/results/CIRI2/hansen/result/")
 
 
 
-validated_circRNA_rminus <- filterCIRI(nonRNAseR_dir = "/Users/anthmam/Desktop/Projects/BHKLAB/ncRNA/results/CIRI2/hansen/result", 
+validated_circRNA_rminus_ciri <- filterCIRI(nonRNAseR_dir = "/Users/anthmam/Desktop/Projects/BHKLAB/ncRNA/results/CIRI2/hansen/result", 
                                        RNAseR_dir = "/Users/anthmam/Desktop/Projects/BHKLAB/ncRNA/results/CIRI2/hansen/result/")
+
+
+#hansen_matched vs validated hansen_matched bar plot (log2)
+library(ggplot2)
+cc <- c(rep(c("norm"),4), rep(c("validated"),4))
+df.hm <- data.frame("sample"=c(hansen_ciri_matched$sample, validated_circRNA_ciri$sample), "condition"=cc <- c(rep(c("norm"),4), rep(c("validated"),4)), "counts"=log2(as.numeric(c(hansen_ciri_matched$count, validated_circRNA_ciri$count))))
+
+ggplot(df.hm, aes(fill=condition, y=counts, x=sample)) + 
+  geom_bar(position="dodge", stat="identity")
+
+
+#hansen_ribo vs validated hansen_ribo bar plot (log2)
+library(ggplot2)
+cc <- c(rep(c("norm"),3), rep(c("validated"),3))
+df.hm <- data.frame("sample"=c(hansen_ciri_counts[c(1,3,5),"sample"], validated_circRNA_rminus_ciri$sample), "condition"=cc <- c(rep(c("norm"),3), rep(c("validated"),3)), "counts"=log2(as.numeric(c(hansen_ciri_counts[c(1,3,5),"count"], validated_circRNA_ciri$count))))
+
+ggplot(df.hm, aes(fill=condition, y=counts, x=sample)) + 
+  geom_bar(position="dodge", stat="identity")
+
+
 
 
 
