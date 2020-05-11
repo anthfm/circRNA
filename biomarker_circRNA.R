@@ -96,7 +96,8 @@ sensitivity_drug <- summarizeSensitivityProfiles(pSet = gCSI, sensitivity.measur
 
 commonSamples <- intersect(colnames(sensitivity_drug),colnames(gcsi_counts_normalized))
 
-ci <- survcomp::concordance.index(sensitivity_drug["Paclitaxel",commonSamples], surv.time = unlist(-gcsi_counts_normalized["ENSG00000074800.16_8", commonSamples]), surv.event = rep(1,length(sensitivity_drug[commonSamples]),outx = F, method="noether"))
+ci <- survcomp::concordance.index(sensitivity_drug["Bortezomib",commonSamples], surv.time = unlist(-gcsi_counts_normalized["ENSG00000078808.17_5", commonSamples]), surv.event = rep(1,length(sensitivity_drug[commonSamples])),outx = F, method="noether")
+
 
 
 rnaSeq_gCSI <- t(exprs(summarizeMolecularProfiles(gCSI,mDataType = "Kallisto_0.46.1.rnaseq",fill.missing = F)))
