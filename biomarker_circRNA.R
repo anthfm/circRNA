@@ -71,6 +71,7 @@ summarizeCIRIMatrix <- function(dir_path){
 
 gcsi_ciri_matrix <- summarizeCIRIMatrix(dir_path = "/Users/anthmam/Desktop/Projects/BHKLAB/ncRNA/results/CIRI2/gCSI/result")
 #gcsi_ciri_matrix <- gcsi_ciri_matrix + 1 #DeSeq calcualtes geometric mean, which is an issue with counts that have 0. +1 will not affect results, as log is taken anyway
+#gcsi_ciri_matrix <- log(gcsi_ciri_matrix + 1)
 colData <- data.frame(matrix(nrow=ncol(gcsi_ciri_matrix), ncol=2))
 colnames(colData) <- c("type", "dataset")
 colData$type <- "cell-line"
@@ -91,13 +92,16 @@ colnames(gcsi_counts_normalized) <- gcsi$cellid[match(colnames(gcsi_counts_norma
 
 gCSI <- readRDS("/Users/anthmam/Desktop/Projects/BHKLAB/PSets/gCSI.rds")
 
-sensitivity_drug <- summarizeSensitivityProfiles(pSet = gCSI, sensitivity.measure = "aac_recomputed", cell.lines = colnames(gcsi_counts_normalized), fill.missing = F)
+sensitivity_drug <- summarizeSensitivityProfiles(pSet = gCSI, sensitivity.measure = "aac_recomputed", fill.missing = F)
 
-ci <- survcomp::concordance.index(sensitivity_drug["Bortezomib",], surv.time = -gcsi_counts_normalized["ENSG00000078808.17_5",colnames(sensitivity_drug)], surv.event = rep(1,ncol(sensitivity_drug)),outx = F, method="noether")
+commonSamples <- intersect(colnames(sensitivity_drug),colnames(gcsi_counts_normalized))
 
+ci <- survcomp::concordance.index(sensitivity_drug["Paclitaxel",commonSamples], surv.time = unlist(-gcsi_counts_normalized["ENSG00000074800.16_8", commonSamples]), surv.event = rep(1,length(sensitivity_drug[commonSamples]),outx = F, method="noether"))
 
 
 rnaSeq_gCSI <- t(exprs(summarizeMolecularProfiles(gCSI,mDataType = "Kallisto_0.46.1.rnaseq",fill.missing = F)))
+
+
 
 # rpkm <- function(counts, lengths) {
 #   rate <- counts / lengths 
