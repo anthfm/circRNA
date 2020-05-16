@@ -113,3 +113,14 @@ rnaSeq_gCSI <- t(exprs(summarizeMolecularProfiles(gCSI,mDataType = "Kallisto_0.4
 #   rate <- counts / lengths
 #   rate / sum(rate) * 1e6
 # }
+
+#library(scales)
+
+#rpm <- function(counts) {
+  #rtrn <- apply(counts, 2, function(x) {
+    #sc <- sum(x, na.rm=T) / 1000000
+    #x / sc
+  #})
+  #rtrn[is.na(rtrn)] <- 0
+  #rtrn
+#}
